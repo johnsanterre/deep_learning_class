@@ -138,3 +138,4 @@ By the end of this week, students should be able to:
 - Make informed decisions about when to use each approach
 - Begin thinking about problems from a deep learning perspective
 
+check
