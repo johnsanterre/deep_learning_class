@@ -1,0 +1,18 @@
+"""
+Week 1: From Statistics to Machine Learning to Deep Learning
+Asynchronous Learning Script
+
+This script provides a narrative walkthrough of the transition from traditional 
+statistical methods to modern deep learning approaches, with hands-on examples.
+
+Key Topics:
+1. Linear Regression (Statistical Approach)
+2. Random Forests (Traditional ML)
+3. Neural Networks (Deep Learning)
+
+Each section includes:
+- Theoretical background
+- Code implementation
+- Advantages and limitations
+- When to use each approach
+""" 
