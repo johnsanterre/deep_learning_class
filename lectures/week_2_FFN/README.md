@@ -173,7 +173,7 @@ where $\mathbf{A}$ and $\mathbf{B}$ are input tensors, and $\mathbf{C}$ is the r
 Keras, a high-level neural network library, prioritizes simplicity and ease of use. It provides a user-friendly API for building and training neural networks, making it accessible to beginners and rapid prototyping. Keras follows a declarative approach, where the model architecture is defined using a sequence of layers. It abstracts away many low-level details, allowing users to focus on the overall structure of the model. Keras supports multiple backend engines, including TensorFlow and Theano, enabling seamless integration with different frameworks. It offers a wide range of built-in layers, activation functions, and optimization algorithms, facilitating the creation of complex neural network architectures with minimal code. Keras also provides utilities for data preprocessing, model evaluation, and visualization, enhancing the end-to-end workflow of building and training models.
 
 3. **From Toy Examples to Real Applications**
-   - ```python
+```python
 import tensorflow as tf
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
