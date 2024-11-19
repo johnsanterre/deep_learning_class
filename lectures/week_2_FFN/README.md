@@ -113,7 +113,69 @@ $$\theta_{t+1} = \theta_t - \alpha \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}
 where $m_t$ and $v_t$ are the first and second moment estimates, respectively, $\beta_1$ and $\beta_2$ are hyperparameters controlling the decay rates, and $\epsilon$ is a small constant for numerical stability.
 
 2. **Implementation in Different Frameworks**
-   - ## Building an FFN from Scratch using NumPy
+## Building an FFN from Scratch using NumPy
+
+```python
+import numpy as np
+
+class FeedForwardNeuralNetwork:
+    def __init__(self, input_size, hidden_size, output_size):
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        self.output_size = output_size
+        self.weights_input_hidden = np.random.randn(input_size, hidden_size) * 0.01
+        self.bias_hidden = np.zeros((1, hidden_size))
+        self.weights_hidden_output = np.random.randn(hidden_size, output_size) * 0.01
+        self.bias_output = np.zeros((1, output_size))
+
+    def sigmoid(self, z):
+        return 1 / (1 + np.exp(-z))
+
+    def sigmoid_derivative(self, z):
+        return z * (1 - z)
+
+    def forward(self, X):
+        self.z1 = np.dot(X, self.weights_input_hidden) + self.bias_hidden
+        self.a1 = self.sigmoid(self.z1)
+        self.z2 = np.dot(self.a1, self.weights_hidden_output) + self.bias_output
+        self.a2 = self.sigmoid(self.z2)
+        return self.a2
+
+    def compute_loss(self, y_true, y_pred):
+        m = y_true.shape[0]
+        return -np.sum(y_true * np.log(y_pred) + (1 - y_true) * np.log(1 - y_pred)) / m
+
+    def backward(self, X, y_true, y_pred, learning_rate):
+        m = X.shape[0]
+        d_loss_a2 = y_pred - y_true
+        d_loss_z2 = d_loss_a2 * self.sigmoid_derivative(y_pred)
+        d_loss_weights_hidden_output = np.dot(self.a1.T, d_loss_z2) / m
+        d_loss_bias_output = np.sum(d_loss_z2, axis=0, keepdims=True) / m
+
+        d_loss_a1 = np.dot(d_loss_z2, self.weights_hidden_output.T)
+        d_loss_z1 = d_loss_a1 * self.sigmoid_derivative(self.a1)
+        d_loss_weights_input_hidden = np.dot(X.T, d_loss_z1) / m
+        d_loss_bias_hidden = np.sum(d_loss_z1, axis=0, keepdims=True) / m
+
+        self.weights_input_hidden -= learning_rate * d_loss_weights_input_hidden
+        self.bias_hidden -= learning_rate * d_loss_bias_hidden
+        self.weights_hidden_output -= learning_rate * d_loss_weights_hidden_output
+        self.bias_output -= learning_rate * d_loss_bias_output
+
+    def train(self, X, y, epochs, learning_rate):
+        for epoch in range(epochs):
+            y_pred = self.forward(X)
+            loss = self.compute_loss(y, y_pred)
+            self.backward(X, y, y_pred, learning_rate)
+            if epoch % 100 == 0:
+                print(f'Epoch {epoch}, Loss: {loss}')
+
+# Example usage:
+# X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+# y = np.array([[0], [1], [1], [0]])
+# nn = FeedForwardNeuralNetwork(input_size=2, hidden_size=2, output_size=1)
+# nn.train(X, y, epochs=1000, learning_rate=0.1)
+```
 
 An FFN (Feed-Forward Neural Network) is a fundamental architecture in deep learning, consisting of an input layer, one or more hidden layers, and an output layer. Each layer is composed of neurons that receive weighted inputs from the previous layer, apply an activation function, and pass the output to the next layer. The weights of the connections between neurons are learned during the training process using optimization algorithms such as gradient descent. In this section, we will explore the process of building an FFN from scratch using NumPy, a powerful numerical computing library in Python.
 
@@ -172,7 +234,10 @@ where $\mathbf{A}$ and $\mathbf{B}$ are input tensors, and $\mathbf{C}$ is the r
 
 Keras, a high-level neural network library, prioritizes simplicity and ease of use. It provides a user-friendly API for building and training neural networks, making it accessible to beginners and rapid prototyping. Keras follows a declarative approach, where the model architecture is defined using a sequence of layers. It abstracts away many low-level details, allowing users to focus on the overall structure of the model. Keras supports multiple backend engines, including TensorFlow and Theano, enabling seamless integration with different frameworks. It offers a wide range of built-in layers, activation functions, and optimization algorithms, facilitating the creation of complex neural network architectures with minimal code. Keras also provides utilities for data preprocessing, model evaluation, and visualization, enhancing the end-to-end workflow of building and training models.
 
-3. **From Toy Examples to Real Applications**
+3. **Code Examples**
+
+
+**Classification**
 ```python
 import tensorflow as tf
 from sklearn.datasets import make_classification
@@ -210,7 +275,9 @@ print(f"Test Accuracy: {accuracy:.4f}")
 y_pred = (model.predict(X_test) > 0.5).astype("int32")
 print(f"Accuracy Score: {accuracy_score(y_test, y_pred):.4f}")
 ```
-   - ```python
+**Regression**
+
+```python
 import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
